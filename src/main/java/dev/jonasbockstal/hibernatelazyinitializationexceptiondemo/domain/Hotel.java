@@ -17,7 +17,7 @@ public class Hotel {
     private Long id;
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<Room> rooms;
 
     public Hotel() {

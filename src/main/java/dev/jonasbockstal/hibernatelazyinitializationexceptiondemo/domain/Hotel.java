@@ -28,6 +28,10 @@ public class Hotel {
         this.rooms = rooms;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public Set<Room> getRooms() {
         return rooms;
     }

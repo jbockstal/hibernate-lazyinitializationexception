@@ -2,6 +2,10 @@ package dev.jonasbockstal.hibernatelazyinitializationexceptiondemo.controllers;
 
 import dev.jonasbockstal.hibernatelazyinitializationexceptiondemo.domain.Hotel;
 import dev.jonasbockstal.hibernatelazyinitializationexceptiondemo.services.HotelService;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,12 +17,29 @@ public class HotelController {
     @Autowired
     private HotelService hotelService;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @GetMapping("/hotels/{id}")
     public Hotel getHotel(@PathVariable Long id) {
-        Hotel hotel = this.hotelService.findHotelById(id);
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        Hotel hotel = null;
 
-        // The next line will trigger a LazyInitializationException
-        hotel.getRooms().forEach(room -> System.out.println(room.getCode()));
+        try {
+            tx = session.beginTransaction();
+            hotel = session.get(Hotel.class, id);
+
+            // The next line will no longer trigger a LazyInitializationException
+            hotel.getRooms().forEach(room -> System.out.println(room.getCode()));
+
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
 
         return hotel;
     }

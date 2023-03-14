@@ -17,7 +17,7 @@ public class HotelController {
     public Hotel getHotel(@PathVariable Long id) {
         Hotel hotel = this.hotelService.findHotelById(id);
 
-        // The next line will trigger a LazyInitializationException
+        // The next line will no longer trigger a LazyInitializationException
         hotel.getRooms().forEach(room -> System.out.println(room.getCode()));
 
         return hotel;

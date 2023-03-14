@@ -17,7 +17,17 @@ public class HotelController {
     public Hotel getHotel(@PathVariable Long id) {
         Hotel hotel = this.hotelService.findHotelById(id);
 
-        // The next line will trigger a LazyInitializationException
+        // The next line will still trigger a LazyInitializationException
+        hotel.getRooms().forEach(room -> System.out.println(room.getCode()));
+
+        return hotel;
+    }
+
+    @GetMapping("/hotels/{id}/graph")
+    public Hotel getHotelViaGraph(@PathVariable Long id) {
+        Hotel hotel = this.hotelService.findHotelByIdUsingEntityGraph(id);
+
+        // The next line will no longer trigger a LazyInitializationException
         hotel.getRooms().forEach(room -> System.out.println(room.getCode()));
 
         return hotel;

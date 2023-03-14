@@ -6,11 +6,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 
 import java.util.Set;
 
 @Entity
+@NamedEntityGraph(name = "graph.hotel.rooms", attributeNodes = @NamedAttributeNode("rooms"))
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
